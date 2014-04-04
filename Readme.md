@@ -1,7 +1,7 @@
 
-# rainforestqa
+# rainforest-qa
 
-  Rainforest QA Api
+  Client for the Rainforest QA API
 
 ## Usage
 
