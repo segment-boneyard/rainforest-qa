@@ -1,0 +1,21 @@
+{
+  "name": "rainforest-qa",
+  "version": "0.0.1",
+  "description": "Rainforest QA Api",
+  "keywords": [],
+  "author": "Segment.io team@segment.io",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/segmentio/rainforest-qa.git"
+  },
+  "dependencies": {
+    "superagent": "^0.17.0"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "publishConfig": {
+    "registry": "https://segmentio.registry.nodejitsu.com"
+  },
+  "main": "index"
+}
