@@ -18,6 +18,20 @@ rainforest
   });
 ```
 
+## API
+
+### new Rainforest(token)
+
+  Creates a new Rainforest client
+
+### .test(id)
+
+  Adds a particular test to be run. By default, all tests will be run if this method is not called
+
+### .run(fn)
+
+  Runs the tests and calls back with the response
+
 ## License
 
 (The MIT License)
