@@ -15,10 +15,11 @@ module.exports = Rainforest;
  * Create a new rainforest client with our token.
  */
 
-function Rainforest(token) {
-  if (!(this instanceof Rainforest)) return new Rainforest(token);
+function Rainforest(token, base) {
+  if (!(this instanceof Rainforest)) return new Rainforest(token, base);
   this.token = token;
   this.tests = [ 'all' ];
+  this.base = base || 'https://app.rainforestqa.com';
 }
 
 /**
@@ -44,7 +45,7 @@ Rainforest.prototype.test = function(id){
 
 Rainforest.prototype.run = function(fn){
   request
-    .post('https://app.rainforestqa.com/api/1/runs')
+    .post(this.base + '/api/1/runs')
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send({ tests: this.tests })
@@ -61,14 +62,14 @@ Rainforest.prototype.run = function(fn){
 
 Rainforest.prototype.getTests = function(fn){
   request
-    .get('https://app.rainforestqa.com/api/1/tests') // ?query=&page_size=7
+    .get(this.base + '/api/1/tests?page_size=7') // ?query=&page_size=7
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .end(fn);
 };
 
 /**
- * Get all tests.
+ * Create a test.
  *
  * Steps look like this:
  *
@@ -91,10 +92,10 @@ Rainforest.prototype.getTests = function(fn){
 
 Rainforest.prototype.createTest = function(data, fn){
   request
-    .post('https://app.rainforestqa.com/api/1/tests')
+    .post(this.base + '/api/1/tests')
     .set('CLIENT_TOKEN', this.token)
     .type('json')
-    .send({ tests: data })
+    .send(data)
     .end(fn);
 };
 
@@ -108,7 +109,7 @@ Rainforest.prototype.createTest = function(data, fn){
 
 Rainforest.prototype.updateTest = function(id, entireTest, fn){
   request
-    .put('https://app.rainforestqa.com/api/1/tests/' + id)
+    .put(this.base + '/api/1/tests/' + id)
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send(entireTest)
@@ -125,7 +126,7 @@ Rainforest.prototype.updateTest = function(id, entireTest, fn){
 
 Rainforest.prototype.removeTests = function(ids, fn){
   request
-    .del('https://app.rainforestqa.com/api/1/tests')
+    .del(this.base + '/api/1/tests')
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send({ tests: ids })
