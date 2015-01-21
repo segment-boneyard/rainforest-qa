@@ -1,4 +1,17 @@
 
+1.1.0 / 2015-01-21
+==================
+
+  * added support for manipulating tests
+
+ / 2015-01-21
+==================
+
+ * increase page size
+ * Merge pull request #1 from segmentio/add/test-api
+ * pass in custom api
+ * add support for manipulating tests
+
 1.0.1 / 2014-04-07
 ==================
 
