@@ -1,3 +1,8 @@
+
+/**
+ * Module dependencies.
+ */
+
 var request = require('superagent');
 
 /**
@@ -10,33 +15,37 @@ module.exports = Rainforest;
  * Create a new rainforest client with our token.
  */
 
-function Rainforest(token){
-  if (!(this instanceof Rainforest)) return new Rainforest(token);
+function Rainforest(token, base) {
+  if (!(this instanceof Rainforest)) return new Rainforest(token, base);
   this.token = token;
-  this.tests = 'all';
+  this.tests = [ 'all' ];
+  this.base = base || 'https://app.rainforestqa.com';
 }
 
 /**
  * Specify a test to run
  *
  * @param {String} id
+ * @return {Rainforest} this
+ * @api public
  */
 
 Rainforest.prototype.test = function(id){
-  if (typeof tests === 'string') this.tests = [];
   this.tests.push(id);
   return this;
-}
+};
 
 /**
  * Run our tests
  *
  * @param {Function} fn
+ * @return {Rainforest} this
+ * @api public
  */
 
 Rainforest.prototype.run = function(fn){
   request
-    .post('https://app.rainforestqa.com/api/1/runs')
+    .post(this.base + '/api/1/runs')
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send({ tests: this.tests })
@@ -44,3 +53,82 @@ Rainforest.prototype.run = function(fn){
   return this;
 };
 
+/**
+ * Get all tests.
+ *
+ * @param {Function} fn
+ * @api public
+ */
+
+Rainforest.prototype.getTests = function(fn){
+  request
+    .get(this.base + '/api/1/tests?page_size=7') // ?query=&page_size=7
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .end(fn);
+};
+
+/**
+ * Create a test.
+ *
+ * Steps look like this:
+ *
+ *   {
+ *     type: "step",
+ *     element: {
+ *       action: "Click the login button",
+ *       response: "Are you at the login page?"
+ *     }
+ *   }
+ *
+ * @param {Object} data
+ *   @property {String} [title] Defaults to "Unnamed Test"
+ *   @property {Array} [elements] Array of steps
+ *   @property {String} [start_uri]
+ *   @property {Integer} [site_id]
+ * @param {Function} fn
+ * @api public
+ */
+
+Rainforest.prototype.createTest = function(data, fn){
+  request
+    .post(this.base + '/api/1/tests')
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send(data)
+    .end(fn);
+};
+
+/**
+ * Update test.
+ *
+ * @param {Array} ids
+ * @param {Function} fn
+ * @api public
+ */
+
+Rainforest.prototype.updateTest = function(id, entireTest, fn){
+  request
+    .put(this.base + '/api/1/tests/' + id)
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send(entireTest)
+    .end(fn);
+};
+
+/**
+ * Remove tests.
+ *
+ * @param {Array} ids
+ * @param {Function} fn
+ * @api public
+ */
+
+Rainforest.prototype.removeTests = function(ids, fn){
+  request
+    .del(this.base + '/api/1/tests')
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send({ tests: ids })
+    .end(fn);
+};
