@@ -62,7 +62,7 @@ Rainforest.prototype.run = function(fn){
 
 Rainforest.prototype.getTests = function(fn){
   request
-    .get(this.base + '/api/1/tests?page_size=7') // ?query=&page_size=7
+    .get(this.base + '/api/1/tests?page_size=100') // ?query=&page_size=7
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .end(fn);
