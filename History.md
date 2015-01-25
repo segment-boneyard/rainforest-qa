@@ -1,4 +1,9 @@
 
+1.1.1 / 2015-01-25
+==================
+
+  * passed response as second argument, to support thunks
+
 1.1.0 / 2015-01-21
 ==================
 
