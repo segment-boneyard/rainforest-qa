@@ -65,7 +65,9 @@ Rainforest.prototype.getTests = function(fn){
     .get(this.base + '/api/1/tests?page_size=100') // ?query=&page_size=7
     .set('CLIENT_TOKEN', this.token)
     .type('json')
-    .end(fn);
+    .end(function(res){
+      fn(null, res);
+    });
 };
 
 /**
@@ -96,7 +98,9 @@ Rainforest.prototype.createTest = function(data, fn){
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send(data)
-    .end(fn);
+    .end(function(res){
+      fn(null, res);
+    });
 };
 
 /**
@@ -113,7 +117,9 @@ Rainforest.prototype.updateTest = function(id, entireTest, fn){
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send(entireTest)
-    .end(fn);
+    .end(function(res){
+      fn(null, res);
+    });
 };
 
 /**
@@ -130,5 +136,7 @@ Rainforest.prototype.removeTests = function(ids, fn){
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send({ tests: ids })
-    .end(fn);
+    .end(function(res){
+      fn(null, res);
+    });
 };
