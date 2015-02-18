@@ -4,6 +4,7 @@
  */
 
 var request = require('superagent');
+var assert = require('assert');
 
 /**
  * Create a new Rainforest client
@@ -136,6 +137,77 @@ Rainforest.prototype.removeTests = function(ids, fn){
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send({ tests: ids })
+    .end(function(res){
+      fn(null, res);
+    });
+};
+
+/**
+ * Create generator (CSV template variables).
+ *
+ * @see  https://github.com/rainforestapp/rainforest-cli/blob/master/lib/rainforest/cli/csv_importer.rb
+ * @see  https://app.rainforestqa.com/docs#!/generators
+ * @param {Object} generator
+ *   @property {String} name
+ *   @property {String} description
+ *   @property {Array} columns Array of column names
+ *     [ { name: foo }, { name: bar }, ... ]
+ */
+
+Rainforest.prototype.createGenerator = function(generator, fn){
+  assert(generator.name, 'Generator needs a `name`.');
+  assert(generator.columns.length, 'Generator needs at least 1 column in `columns`.');
+
+  request
+    .post(this.base + '/api/1/generators')
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send(generator)
+    .end(function(res){
+      // @columns = response['columns']
+      // @generator_id = response['id']
+      fn(null, res);
+    });
+};
+
+/**
+ * Create generator row (record for CSV template).
+ *
+ * @param {String} generatorId
+ * @param {Array} row Array of values
+ * @param {Array} columns Array of columns with `id` property
+ * @param {Function} fn
+ */
+
+Rainforest.prototype.createGeneratorRow = function(generatorId, row, columns, fn){
+  var data = columns.reduce(function(result, column, i){
+    result[column.id] = row[i];
+    return result;
+  }, {});
+
+  request
+    .post(this.base + '/api/1/generators/' + generatorId + '/rows')
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send({ data: data });
+    .end(function(res){
+      fn(null, res);
+    });
+};
+
+/**
+ * Delete generator row.
+ *
+ * @param {String} generatorId
+ * @param {String} rowId
+ * @param {Function} fn
+ */
+
+Rainforest.prototype.deleteGeneratorRow = function(generatorId, rowId, fn){
+  request
+    .del(this.base + '/api/1/generators/' + generatorId + '/rows/' + rowId)
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
     .end(function(res){
       fn(null, res);
     });
