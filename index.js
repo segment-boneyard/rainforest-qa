@@ -199,6 +199,20 @@ Rainforest.prototype.updateGenerator = function(id, updates, fn){
 };
 
 /**
+ * Remove generator.
+ */
+
+Rainforest.prototype.removeGenerator = function(id, fn){
+  request
+    .del(this.base + '/api/1/generators/' + id)
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .end(function(res){
+      fn(null, log(res));
+    });
+};
+
+/**
  * Get all rows for generator.
  */
 
