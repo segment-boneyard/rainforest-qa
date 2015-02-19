@@ -1,4 +1,9 @@
 
+1.2.0 / 2015-02-19
+==================
+
+  * added support for managing generators and generator rows
+
 1.1.1 / 2015-01-25
 ==================
 
