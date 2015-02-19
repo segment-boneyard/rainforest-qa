@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+var debug = require('debug')('rainforest');
 var request = require('superagent');
 var assert = require('assert');
 
@@ -67,7 +68,7 @@ Rainforest.prototype.getTests = function(fn){
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .end(function(res){
-      fn(null, res);
+      fn(null, log(res));
     });
 };
 
@@ -100,7 +101,7 @@ Rainforest.prototype.createTest = function(data, fn){
     .type('json')
     .send(data)
     .end(function(res){
-      fn(null, res);
+      fn(null, log(res));
     });
 };
 
@@ -119,7 +120,7 @@ Rainforest.prototype.updateTest = function(id, entireTest, fn){
     .type('json')
     .send(entireTest)
     .end(function(res){
-      fn(null, res);
+      fn(null, log(res));
     });
 };
 
@@ -138,7 +139,21 @@ Rainforest.prototype.removeTests = function(ids, fn){
     .type('json')
     .send({ tests: ids })
     .end(function(res){
-      fn(null, res);
+      fn(null, log(res));
+    });
+};
+
+/**
+ * Get all generators.
+ */
+
+Rainforest.prototype.getGenerators = function(fn){
+  request
+    .get(this.base + '/api/1/generators')
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .end(function(res){
+      fn(null, log(res));
     });
 };
 
@@ -164,9 +179,36 @@ Rainforest.prototype.createGenerator = function(generator, fn){
     .type('json')
     .send(generator)
     .end(function(res){
-      // @columns = response['columns']
-      // @generator_id = response['id']
-      fn(null, res);
+      fn(null, log(res));
+    });
+};
+
+/**
+ * Update generator.
+ */
+
+Rainforest.prototype.updateGenerator = function(id, updates, fn){
+  request
+    .put(this.base + '/api/1/generators/' + id)
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send(updates)
+    .end(function(res){
+      fn(null, log(res));
+    });
+};
+
+/**
+ * Get all rows for generator.
+ */
+
+Rainforest.prototype.getGeneratorRows = function(generatorId, fn){
+  request
+    .get(this.base + '/api/1/generators/' + generatorId + '/rows')
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .end(function(res){
+      fn(null, log(res));
     });
 };
 
@@ -180,18 +222,34 @@ Rainforest.prototype.createGenerator = function(generator, fn){
  */
 
 Rainforest.prototype.createGeneratorRow = function(generatorId, row, columns, fn){
-  var data = columns.reduce(function(result, column, i){
-    result[column.id] = row[i];
-    return result;
-  }, {});
-
   request
     .post(this.base + '/api/1/generators/' + generatorId + '/rows')
     .set('CLIENT_TOKEN', this.token)
     .type('json')
-    .send({ data: data });
+    .send({ data: data(row, columns) })
     .end(function(res){
-      fn(null, res);
+      // { id: 89248,
+      //  data:
+      //   { '822': 'somevalue',
+      //     '823': 'another',
+      //     '824': 'another',
+      //     '825': 'and another' } }
+      fn(null, log(res));
+    });
+};
+
+/**
+ * Update generator row.
+ */
+
+Rainforest.prototype.updateGeneratorRow = function(generatorId, rowId, row, columns, fn){
+  request
+    .post(this.base + '/api/1/generators/' + generatorId + '/rows/' + rowId)
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .send({ data: data(row, columns) })
+    .end(function(res){
+      fn(null, log(res));
     });
 };
 
@@ -203,12 +261,48 @@ Rainforest.prototype.createGeneratorRow = function(generatorId, row, columns, fn
  * @param {Function} fn
  */
 
-Rainforest.prototype.deleteGeneratorRow = function(generatorId, rowId, fn){
+Rainforest.prototype.removeGeneratorRow = function(generatorId, rowId, fn){
   request
     .del(this.base + '/api/1/generators/' + generatorId + '/rows/' + rowId)
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .end(function(res){
-      fn(null, res);
+      fn(null, log(res));
     });
 };
+
+/**
+ * Build Row data.
+ *
+ * @param {Array} row
+ * @param {Array} columns
+ * @return {Object} data
+ */
+
+function data(row, columns) {
+  return columns.reduce(function(result, column, i){
+    result[column.id] = row[i];
+    return result;
+  }, {});
+}
+
+/**
+ * Debug response.
+ *
+ * @param {Object} res
+ * @return {Object} res
+ */
+
+function log(res) {
+  var req = res.req;
+  var path = req.path;
+  var method = req.method;
+  var body = JSON.stringify(res.error || res.body || res.text, null, 2)
+    .split('\n')
+    .map(function(line){
+      return '               ' + line;
+    })
+    .join('\n');
+  debug('%s %s\n%s', method, path, body);
+  return res;
+}
