@@ -258,7 +258,7 @@ Rainforest.prototype.createGeneratorRow = function(generatorId, row, columns, fn
 
 Rainforest.prototype.updateGeneratorRow = function(generatorId, rowId, row, columns, fn){
   request
-    .post(this.base + '/api/1/generators/' + generatorId + '/rows/' + rowId)
+    .put(this.base + '/api/1/generators/' + generatorId + '/rows/' + rowId)
     .set('CLIENT_TOKEN', this.token)
     .type('json')
     .send({ data: data(row, columns) })
