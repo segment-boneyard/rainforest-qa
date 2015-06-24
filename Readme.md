@@ -1,3 +1,4 @@
+[![Build Status](https://circleci.com/gh/segmentio/rainforest-qa.png?circle-token=undefined)](https://circleci.com/gh/segmentio/rainforest-qa)
 
 # rainforest-qa
 
