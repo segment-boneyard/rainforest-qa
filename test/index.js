@@ -66,15 +66,30 @@ describe('Rainforest#()', function() {
 
   describe('#getTests()', function() {
     it('should get all the tests', function(done) {
-      rainforest
-        .getTests(function(err, res) {
-          if (err) return done(err);
-          assert(res.text);
-          done();
-        });
+      rainforest.getTests(function(err, res) {
+        if (err) return done(err);
+        assert(res.text);
+        done();
+      });
     });
   });
-  
+
+  describe('#getTest()', function() {
+    it('should get the test', function(done) {
+      rainforest.getTests(function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        rainforest.getTest(response[0].id, function(err, res) {
+          if (err) return done(err);
+          var testResponse = JSON.parse(res.text);
+          assert(testResponse.id);
+          assert.equal(res.status, 200);
+          done();
+        });
+      });
+    });
+  });
+
   describe('#createTest()', function() {
     it('should create the test', function(done) {
       var data = {

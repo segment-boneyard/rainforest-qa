@@ -55,6 +55,24 @@ Rainforest.prototype.getTests = function(fn){
 };
 
 /**
+ * Get one test.
+ *
+ * @param {String} id
+ * @param {Function} fn
+ * @api public
+ */
+
+Rainforest.prototype.getTest = function(id, fn){
+  request
+    .get(this.base + '/api/1/tests/' + id)
+    .set('CLIENT_TOKEN', this.token)
+    .type('json')
+    .end(function(res){
+      fn(null, log(res));
+    });
+};
+
+/**
  * Create a test.
  *
  * Steps look like this:
