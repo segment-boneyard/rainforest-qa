@@ -36,10 +36,24 @@ describe('Rainforest()', function() {
     var rainforest = Rainforest(null, base);
     assert.equal(rainforest.base, base);
   });
+
+  it('should initialize a base with default value', function() {
+    var rainforest = Rainforest(null, null);
+    assert.equal(rainforest.base, 'https://app.rainforestqa.com');
+  });
+
+  it('should initialize an array of tests', function() {
+    var rainforest = Rainforest(null, null);
+    assert.deepEqual(rainforest.tests, ['all']);
+  });
 });
 
 describe('Rainforest#test()', function() {
-  
+  it('should add to the array of tests', function() {
+    var rainforest = Rainforest(null, null);
+    rainforest.test('foo');
+    assert.deepEqual(rainforest.tests, ['all', 'foo']);
+  });
 });
 
 describe('Rainforest#run()', function() {
