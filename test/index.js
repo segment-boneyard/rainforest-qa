@@ -149,43 +149,99 @@ describe('Rainforest#()', function() {
     });
   });
 
-  describe('Rainforest#getGenerators()', function() {
+  describe('#getGenerators()', function() {
     it('should get all the generators', function(done) {
+      rainforest.getGenerators(function(err, res) {
+        if (err) return done(err);
+        assert(res.text);
+        done();
+      });
+    });
+  });
+
+  describe('#createGenerator()', function() {
+    it('should create the generator', function(done) {
+      var data = {
+        name: 'test_create_generator',
+        generator_type: 'tabular',
+        description: 'testing creating a generator',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+    
+      rainforest.createGenerator(data, function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.status, 201);
+        var response = JSON.parse(res.text);
+        assert(response);
+        assert(response.id);
+        rainforest.removeGenerator(response.id, function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('#updateGenerator()', function() {
+    it('should update the generator', function(done) {
+      var data = {
+        name: 'test_updates_generator',
+        generator_type: 'tabular',
+        description: 'testing updating a generator',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+
+      rainforest.createGenerator(data, function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        rainforest.updateGenerator(response.id, data, function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.status, 200);
+          assert(res.text);
+          rainforest.removeGenerator(response.id, function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('#removeGenerator()', function() {
+    it('should remove the generator', function(done) {
+      var data = {
+        name: 'test_remove_generator',
+        generator_type: 'tabular',
+        description: 'testing removing a generator',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+
       rainforest
-        .getGenerators(function(err, res) {
+        .createGenerator(data, function(err, res) {
           if (err) return done(err);
           var response = JSON.parse(res.text);
-          assert(response[0]);
-          done();
+          rainforest.removeGenerator(response.id, function(err, res) {
+            if (err) return done(err);
+            assert.equal(res.status, 200);
+            done();
+          });
         });
     });
   });
 
-  describe('Rainforest#createGenerator()', function() {
+  describe('#getGeneratorRows()', function() {
     
   });
 
-  describe('Rainforest#updateGenerator()', function() {
+  describe('#createGeneratorRow()', function() {
     
   });
 
-  describe('Rainforest#removeGenerator()', function() {
+  describe('#updateGeneratorRow()', function() {
     
   });
 
-  describe('Rainforest#getGeneratorRows()', function() {
-    
-  });
-
-  describe('Rainforest#createGeneratorRow()', function() {
-    
-  });
-
-  describe('Rainforest#updateGeneratorRow()', function() {
-    
-  });
-
-  describe('Rainforest#removeGeneratorRow()', function() {
+  describe('#removeGeneratorRow()', function() {
     
   });
 });
