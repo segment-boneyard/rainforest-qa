@@ -12,6 +12,7 @@
     "superagent": "^0.17.0"
   },
   "devDependencies": {
+    "debug": "^2.2.0",
     "mocha": "*"
   },
   "main": "index"
