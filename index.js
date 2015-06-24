@@ -38,24 +38,6 @@ Rainforest.prototype.test = function(id){
 };
 
 /**
- * Run our tests
- *
- * @param {Function} fn
- * @return {Rainforest} this
- * @api public
- */
-
-Rainforest.prototype.run = function(fn){
-  request
-    .post(this.base + '/api/1/runs')
-    .set('CLIENT_TOKEN', this.token)
-    .type('json')
-    .send({ tests: this.tests })
-    .end(fn);
-  return this;
-};
-
-/**
  * Get all tests.
  *
  * @param {Function} fn
