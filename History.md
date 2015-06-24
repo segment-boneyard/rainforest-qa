@@ -1,4 +1,21 @@
 
+1.2.2 / 2015-06-24
+==================
+
+  * added getTest, and test
+  * badge working
+  * updated badge
+  * added circle-ci
+  * Merge pull request #4 from segmentio/add/tests
+  * Merge pull request #3 from segmentio/fixes
+  * finished tests
+  * added generator tests
+  * added getgenerators test
+  * added more tests, removed run method
+  * added more tests
+  * added tests
+  * minor fixes for make and missing deps
+
 1.2.1 / 2015-02-20
 ==================
 
