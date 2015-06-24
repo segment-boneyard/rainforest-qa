@@ -56,9 +56,9 @@ describe('Rainforest#test()', function() {
   });
 });
 
-describe('Rainforest#foo()', function() {
+describe('Rainforest#()', function() {
   var rainforest;
-  this.timeout(4000);
+  this.timeout(5000);
 
   beforeEach(function() {
     rainforest = Rainforest('1a32ff6d44b9957f069648a34b8a2c52', 'https://app.rnfrst.com/');
@@ -75,7 +75,7 @@ describe('Rainforest#foo()', function() {
     });
   });
   
-  describe('Rainforest#createTest()', function() {
+  describe('#createTest()', function() {
     it('should create the test', function(done) {
       var data = {
         start_uri: '/login',
@@ -98,7 +98,7 @@ describe('Rainforest#foo()', function() {
     });
   });
 
-  describe('Rainforest#updateTest()', function() {
+  describe('#updateTest()', function() {
     it('should update the test', function(done) {
       var data = {
         start_uri: '/login',
@@ -123,7 +123,7 @@ describe('Rainforest#foo()', function() {
     });
   });
 
-  describe('Rainforest#removeTests()', function() {
+  describe('#removeTests()', function() {
     it('should remove the test', function(done) {
       var data = {
         start_uri: '/login',
@@ -150,7 +150,15 @@ describe('Rainforest#foo()', function() {
   });
 
   describe('Rainforest#getGenerators()', function() {
-    
+    it('should get all the generators', function(done) {
+      rainforest
+        .getGenerators(function(err, res) {
+          if (err) return done(err);
+          var response = JSON.parse(res.text);
+          assert(response[0]);
+          done();
+        });
+    });
   });
 
   describe('Rainforest#createGenerator()', function() {
