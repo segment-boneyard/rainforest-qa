@@ -58,7 +58,7 @@ describe('Rainforest#test()', function() {
 
 describe('Rainforest#()', function() {
   var rainforest;
-  this.timeout(5000);
+  this.timeout(8000);
 
   beforeEach(function() {
     rainforest = Rainforest('1a32ff6d44b9957f069648a34b8a2c52', 'https://app.rnfrst.com/');
@@ -230,18 +230,134 @@ describe('Rainforest#()', function() {
   });
 
   describe('#getGeneratorRows()', function() {
-    
+    it('should get the generator rows', function(done) {
+      var data = {
+        name: 'etthegenerator_Rows',
+        generator_type: 'tabular',
+        description: 'testing getting a generator\'s rows',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+
+      rainforest.createGenerator(data, function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        var generatorId = response.id;
+        var columns = response.columns;
+        rainforest.createGeneratorRow(generatorId, ['hello', 'hello2'], columns, function(err, res) {
+          if (err) return done(err);
+          rainforest.getGeneratorRows(generatorId, function(err, res) {
+            if (err) return done(err);
+            assert.equal(res.status, 200);
+            var rowResponse = JSON.parse(res.text);
+            var rowId = rowResponse[0].id;
+            assert(rowId);
+            rainforest.removeGeneratorRow(generatorId, rowId, function(err, res) {
+              if (err) return done(err);
+              rainforest.removeGenerator(generatorId, function(err, res) {
+                if (err) return done(err);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
   });
 
   describe('#createGeneratorRow()', function() {
-    
+    it('should create the generator row', function(done) {
+      var data = {
+        name: 'test_create_the_generator_row',
+        generator_type: 'tabular',
+        description: 'testing creating a generator\'s rows',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+
+      rainforest.createGenerator(data, function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        var generatorId = response.id;
+        var columns = response.columns;
+        rainforest.createGeneratorRow(generatorId, ['hello', 'hello2'], columns, function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.status, 201);
+          var rowResponse = JSON.parse(res.text);
+          var rowId = rowResponse.id;
+          assert(rowId);
+          rainforest.removeGeneratorRow(generatorId, rowId, function(err, res) {
+            if (err) return done(err);
+            rainforest.removeGenerator(generatorId, function(err, res) {
+              if (err) return done(err);
+              done();
+            });
+          });
+        });
+      });
+    });
   });
 
   describe('#updateGeneratorRow()', function() {
-    
+    it('should update the generator row', function(done) {
+      var data = {
+        name: 'test_update_the_generator_row',
+        generator_type: 'tabular',
+        description: 'testing updating a generator\'s rows',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+
+      rainforest.createGenerator(data, function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        var generatorId = response.id;
+        var columns = response.columns;
+        rainforest.createGeneratorRow(generatorId, ['hello', 'hello2'], columns, function(err, res) {
+          if (err) return done(err);
+          var rowResponse = JSON.parse(res.text);
+          var rowId = rowResponse.id;
+          rainforest.updateGeneratorRow(generatorId, rowId, ['hello', 'hello2'], columns, function(err, res) {
+            if (err) return done(err);
+            assert.equal(res.status, 200);
+            rainforest.removeGeneratorRow(generatorId, rowId, function(err, res) {
+              if (err) return done(err);
+              rainforest.removeGenerator(generatorId, function(err, res) {
+                if (err) return done(err);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
   });
 
   describe('#removeGeneratorRow()', function() {
-    
+    it('should remove the generator row', function(done) {
+      var data = {
+        name: 'test_remove_the_generator_row',
+        generator_type: 'tabular',
+        description: 'testing removing a generator\'s rows',
+        columns: [ { name: 'foo' }, { name: 'bar' } ]
+      };
+
+      rainforest.createGenerator(data, function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        var generatorId = response.id;
+        var columns = response.columns;
+        rainforest.createGeneratorRow(generatorId, ['hello', 'hello2'], columns, function(err, res) {
+          if (err) return done(err);
+          var rowResponse = JSON.parse(res.text);
+          var rowId = rowResponse.id;
+          rainforest.removeGeneratorRow(generatorId, rowId, function(err, res) {
+            if (err) return done(err);
+            assert.equal(res.status, 200);
+            rainforest.removeGenerator(generatorId, function(err, res) {
+              if (err) return done(err);
+              done();
+            });
+          });
+        });
+      });
+    });
   });
 });
