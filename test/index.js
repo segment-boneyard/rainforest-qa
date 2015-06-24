@@ -56,54 +56,128 @@ describe('Rainforest#test()', function() {
   });
 });
 
-describe('Rainforest#run()', function() {
-  
-});
+describe('Rainforest#foo()', function() {
+  var rainforest;
+  this.timeout(4000);
 
-describe('Rainforest#getTests()', function() {
-  
-});
+  beforeEach(function() {
+    rainforest = Rainforest('1a32ff6d44b9957f069648a34b8a2c52', 'https://app.rnfrst.com/');
+  });
 
-describe('Rainforest#createTest()', function() {
+  describe('#getTests()', function() {
+    it('should get all the tests', function(done) {
+      rainforest
+        .getTests(function(err, res) {
+          if (err) return done(err);
+          assert(res.text);
+          done();
+        });
+    });
+  });
   
-});
+  describe('Rainforest#createTest()', function() {
+    it('should create the test', function(done) {
+      var data = {
+        start_uri: '/login',
+        title: 'Login',
+        elements: [],
+        site_id: 9
+      };
 
-describe('Rainforest#updateTest()', function() {
-  
-});
+      rainforest.createTest(data, function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.status, 201);
+        var response = JSON.parse(res.text);
+        var id = response.id;
+        assert(id);
+        rainforest.removeTests([response.id], function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+      });
+    });
+  });
 
-describe('Rainforest#removeTests()', function() {
-  
-});
+  describe('Rainforest#updateTest()', function() {
+    it('should update the test', function(done) {
+      var data = {
+        start_uri: '/login',
+        title: 'Login',
+        elements: [],
+        site_id: 9
+      };
+      
+      rainforest.createTest(data, function(err, res) {
+        if (err) return done(err);
+        var response = JSON.parse(res.text);
+        rainforest.updateTest(response.id, data, function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.status, 200);
+          assert(res.text);
+          rainforest.removeTests([response.id], function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+        });
+      });
+    });
+  });
 
-describe('Rainforest#getGenerators()', function() {
-  
-});
+  describe('Rainforest#removeTests()', function() {
+    it('should remove the test', function(done) {
+      var data = {
+        start_uri: '/login',
+        title: 'Login',
+        elements: [],
+        site_id: 9
+      };
+      
+      rainforest.createTest(data, function(err, res) {
+        if (err) return done(err);
+        var createResponse = JSON.parse(res.text);
+        rainforest.updateTest(createResponse.id, data, function(err, res) {
+          if (err) return done(err);
+          rainforest.removeTests([createResponse.id], function(err, res) {
+            if (err) return done(err);
+            assert.equal(res.status, 200);
+            var removeResponse = JSON.parse(res.text);
+            assert.deepEqual(removeResponse, { "ok": true, "count": 0 });
+            done();
+          });
+        });
+      });
+    });
+  });
 
-describe('Rainforest#createGenerator()', function() {
-  
-});
+  describe('Rainforest#getGenerators()', function() {
+    
+  });
 
-describe('Rainforest#updateGenerator()', function() {
-  
-});
+  describe('Rainforest#createGenerator()', function() {
+    
+  });
 
-describe('Rainforest#removeGenerator()', function() {
-  
-});
+  describe('Rainforest#updateGenerator()', function() {
+    
+  });
 
-describe('Rainforest#getGeneratorRows()', function() {
-  
-});
+  describe('Rainforest#removeGenerator()', function() {
+    
+  });
 
-describe('Rainforest#createGeneratorRow()', function() {
-  
-});
+  describe('Rainforest#getGeneratorRows()', function() {
+    
+  });
 
-describe('Rainforest#updateGeneratorRow()', function() {
-  
-});
+  describe('Rainforest#createGeneratorRow()', function() {
+    
+  });
 
-describe('Rainforest#removeGeneratorRow()', function() {
-  
+  describe('Rainforest#updateGeneratorRow()', function() {
+    
+  });
+
+  describe('Rainforest#removeGeneratorRow()', function() {
+    
+  });
 });
